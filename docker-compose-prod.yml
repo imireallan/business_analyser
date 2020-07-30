@@ -1,0 +1,54 @@
+version: '3'
+
+services:
+  client:
+    image: imireallan/offline_business_analyser_prod_frontend:v2.0.0
+    restart: on-failure
+    env_file:
+      - ./business_analyzer_frontend/.env
+    volumes:
+      - ./business_analyzer_frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:80"
+  rest_api: &rest_api
+    image: imireallan/offline_business_analyser_backend:v1.0.0
+    restart: on-failure
+    env_file:
+      - ./offline_business_analyzer_API/.env
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./offline_business_analyzer_API:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - rabbitmq
+      - celery_worker
+  db:
+    image: postgres:latest
+    restart: unless-stopped
+    env_file:
+      - ./offline_business_analyzer/.env
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./offline_business_analyzer_API/postgres/data:/var/lib/postgresql/data
+  rabbitmq:
+    image: rabbitmq:alpine
+  celery_worker:
+    <<: *rest_api
+    command: celery -A offline_business_analyzer worker --loglevel=info
+    ports: []
+    depends_on:
+      - rabbitmq
+      - db
+  flower:
+    image: mher/flower
+    environment:
+      - CELERY_BROKER_URL=amqp://rabbitmq
+      - FLOWER_PORT=8888
+    ports:
+      - 8888:8888
+    depends_on:
+      - rabbitmq

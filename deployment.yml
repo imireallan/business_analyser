@@ -1,0 +1,42 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: business-analyzer-service
+spec:
+  selector:
+    app: business-analyser
+  ports:
+    - protocol: "TCP"
+      # Port accessible inside cluster
+      port: 3000
+      # Port to forward to inside the pod
+      targetPort: 80
+      # Port accessible outside cluster
+      nodePort: 30001
+  type: LoadBalancer
+
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: business-analyzer-deployment
+  labels:
+    app: business-analyzer
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: business-analyzer
+  template:
+    metadata:
+      labels:
+        app: business-analyzer
+    spec:
+      containers:
+        - name: business-analyzer
+          image: imireallan/offline_business_analyser_prod_frontend:v2.0.0
+          ports:
+            - containerPort: 80
