@@ -1,6 +1,6 @@
-[submodule "offline-business-analyzer_front-end"]
-	path = offline-business-analyzer_front-end
-	url = https://github.com/imireallan/offline-business-analyzer_front-end.git
 [submodule "offline_business_analyzer_API"]
 	path = offline_business_analyzer_API
 	url = https://github.com/imireallan/offline_business_analyzer_API.git
+[submodule "offline-business-analyzer_front-end"]
+	path = offline-business-analyzer_front-end
+	url = https://github.com/imireallan/offline-business-analyzer_front-end.git

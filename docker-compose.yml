@@ -5,10 +5,10 @@ services:
     image: imireallan/offline_business_analyser_frontend:v3.0.0
     restart: on-failure
     env_file:
-      - ./business_analyzer_frontend/.env
+      - ./offline-business-analyzer_front-end/.env
     command: npm start
     volumes:
-      - ./business_analyzer_frontend:/app
+      - ./offline-business-analyzer_front-end:/app
       - /app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
